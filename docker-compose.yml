@@ -1,0 +1,45 @@
+# `docker compose up` → storefront on :3000, SATIM simulator on :8888. No real money.
+services:
+  app:
+    build: .
+    environment:
+      APP_URL: http://localhost:3000
+      REDIS_URL: redis://db:6379
+      # Backend → mock over the compose network…
+      SATIM_API_URL: http://satim-mock:8888/payment/rest
+      # …while the browser-facing formUrl is built from --public-url below (the load-bearing split).
+      SATIM_USERNAME: demo-merchant
+      SATIM_PASSWORD: demo-password
+      SATIM_TERMINAL_ID: E010900000
+      PAY_ADMIN_TOKEN: dev-admin-token
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+      satim-mock:
+        condition: service_started
+    healthcheck:
+      # 127.0.0.1, not localhost: Node binds IPv4 0.0.0.0, but localhost can resolve to ::1.
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+
+  db:
+    image: redis:7-alpine
+    # Reached by the app over the compose network; no host port (avoids clashing with a local Redis).
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+  satim-mock:
+    image: node:22-alpine
+    command: >
+      npx -y @bakissation/satim-testing satim-mock
+      --port 8888 --host 0.0.0.0 --public-url http://localhost:8888
+    ports:
+      - "8888:8888"

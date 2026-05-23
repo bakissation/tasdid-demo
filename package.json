@@ -1,0 +1,45 @@
+{
+  "name": "tasdid-demo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Reference storefront for the @bakissation/* Algerian payments family: a real CIB/Edahabia checkout end-to-end, and the canonical example of e2e-testing SATIM in CI against @bakissation/satim-testing. Runs entirely on the mock — no real money.",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "compose:up": "docker compose up -d --build",
+    "compose:down": "docker compose down -v"
+  },
+  "dependencies": {
+    "@bakissation/dinar": "^1.1.0",
+    "@bakissation/satim": "^2.0.0",
+    "@bakissation/tasdid": "^1.4.0",
+    "@bakissation/tasdid-adapters": "^1.2.0",
+    "ioredis": "^5.4.1",
+    "lucide-react": "^0.460.0",
+    "next": "^15.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@bakissation/satim-testing": "^1.1.0",
+    "@playwright/test": "^1.49.0",
+    "@tailwindcss/postcss": "^4.0.0",
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "eslint": "^9.17.0",
+    "eslint-config-next": "^15.1.0",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.7.0",
+    "vitest": "^2.1.8"
+  }
+}
